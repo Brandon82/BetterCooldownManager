@@ -84,4 +84,6 @@ function BCDM:ResolveMedia()
     local GeneralDB = BCDM.db.global.General
     BCDM.Media = BCDM.Media or {}
     BCDM.Media.Font = LSM:Fetch("font", GeneralDB.Font) or STANDARD_TEXT_FONT
+    BCDM.Media.PowerBarFGTexture = LSM:Fetch("statusbar", BCDM.db.global.PowerBar.FGTexture) or "Interface\\RaidFrame\\Raid-Bar-Hp-Fill"
+    BCDM.Media.PowerBarBGTexture = LSM:Fetch("statusbar", BCDM.db.global.PowerBar.BGTexture) or "Interface\\Buttons\\WHITE8X8"
 end

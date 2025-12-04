@@ -179,6 +179,12 @@ local function PositionCooldownViewers()
     end
 end
 
+local function AdjustCooldownManagerStrata()
+    _G["EssentialCooldownViewer"]:SetFrameStrata("LOW")
+    _G["UtilityCooldownViewer"]:SetFrameStrata("LOW")
+    _G["BuffIconCooldownViewer"]:SetFrameStrata("LOW")
+end
+
 local function FetchCooldownTextRegion(cooldown)
     if not cooldown then return end
     if cooldown.FUIText then
@@ -215,10 +221,10 @@ end
 function BCDM:SetupCooldownManager()
     PositionCooldownViewers()
     for cooldownViewer, _ in pairs(IconPerCooldownViewer) do ApplyCooldownText(cooldownViewer) end
-    hooksecurefunc(EditModeManagerFrame, "EnterEditMode", function() PositionCooldownViewers() SizeAllIcons() end)
-    hooksecurefunc(EditModeManagerFrame, "ExitEditMode", function() PositionCooldownViewers() SizeAllIcons() end)
+    hooksecurefunc(EditModeManagerFrame, "EnterEditMode", function() PositionCooldownViewers() SizeAllIcons() BCDM:SetPowerBarWidth() AdjustCooldownManagerStrata() end)
+    hooksecurefunc(EditModeManagerFrame, "ExitEditMode", function() PositionCooldownViewers() SizeAllIcons() BCDM:SetPowerBarWidth() AdjustCooldownManagerStrata() end)
     for _, cooldownViewer in ipairs(CooldownManagerViewers) do
-        hooksecurefunc(_G[cooldownViewer], "RefreshLayout", function() SkinCooldownManager() PositionCooldownViewers() SizeAllIcons() end)
+        hooksecurefunc(_G[cooldownViewer], "RefreshLayout", function() SkinCooldownManager() PositionCooldownViewers() SizeAllIcons() BCDM:SetPowerBarWidth() AdjustCooldownManagerStrata() end)
     end
 end
 
@@ -228,10 +234,12 @@ function BCDM:UpdateCooldownViewer(cooldownViewer)
     SizeIconsInCooldownViewer(cooldownViewer, BCDM.db.global[CooldownViewerToDB[cooldownViewer]].IconSize)
     AdjustChargeCount(cooldownViewer)
     ApplyCooldownText(cooldownViewer)
+    AdjustCooldownManagerStrata()
     if _G[cooldownViewer] and _G[cooldownViewer].Layout then
         _G[cooldownViewer]:Layout()
     end
     PositionCooldownViewers()
+    BCDM:SetPowerBarWidth()
 end
 
 function BCDM:RefreshAllViewers()

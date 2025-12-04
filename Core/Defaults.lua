@@ -39,5 +39,18 @@ BCDM.Defaults = {
                 Anchors = {"BOTTOMRIGHT", "BOTTOMRIGHT", 0, 3}
             },
         },
+        PowerBar = {
+            Height = 13,
+            FGTexture = "Blizzard Raid Bar",
+            BGTexture = "Solid",
+            FGColour = {0/255, 122/255, 204/255, 1},
+            BGColour = {20/255, 20/255, 20/255, 1},
+            Anchors = {"BOTTOM", "EssentialCooldownViewer", "TOP", 0, 2},
+            Text = {
+                FontSize = 12,
+                Colour = {1, 1, 1},
+                Anchors = {"CENTER", "CENTER", 0, 0}
+            }
+        }
     }
 }

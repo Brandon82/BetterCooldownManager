@@ -19,6 +19,19 @@ local Anchors = {
     { "TOPLEFT", "TOP", "TOPRIGHT", "LEFT", "CENTER", "RIGHT", "BOTTOMLEFT", "BOTTOM", "BOTTOMRIGHT" }
 }
 
+local PowerBarParents = {
+    {
+        ["EssentialCooldownViewer"] = "Essential",
+        ["UtilityCooldownViewer"] = "Utility",
+    },
+    { "EssentialCooldownViewer", "UtilityCooldownViewer"}
+}
+
+local PowerBarAnchorToName = {
+    ["EssentialCooldownViewer"] = "Essential Cooldown Viewer",
+    ["UtilityCooldownViewer"] = "Utility Cooldown Viewer",
+}
+
 local function CreateInfoTag(Description)
     local InfoDesc = AG:Create("Label")
     InfoDesc:SetText(BCDM.InfoButton .. Description)
@@ -78,7 +91,7 @@ local function DrawGeneralSettings(parentContainer)
     CooldownManagerIconZoomSlider:SetValue(GeneralDB.IconZoom)
     CooldownManagerIconZoomSlider:SetSliderValues(0, 1, 0.01)
     CooldownManagerIconZoomSlider:SetIsPercent(true)
-    CooldownManagerIconZoomSlider:SetCallback("OnMouseUp", function(_, _, value) GeneralDB.IconZoom = value BCDM:RefreshAllViewers() end)
+    CooldownManagerIconZoomSlider:SetCallback("OnValueChanged", function(_, _, value) GeneralDB.IconZoom = value BCDM:RefreshAllViewers() end)
     CooldownManagerIconZoomSlider:SetRelativeWidth(0.33)
     ScrollFrame:AddChild(CooldownManagerIconZoomSlider)
 
@@ -260,6 +273,161 @@ local function DrawCooldownSettings(parentContainer, cooldownViewer)
     return ScrollFrame
 end
 
+local function DrawPowerBarSettings(parentContainer)
+    local PowerBarDB = BCDM.db.global.PowerBar
+
+    local ScrollFrame = AG:Create("ScrollFrame")
+    ScrollFrame:SetLayout("Flow")
+    ScrollFrame:SetFullWidth(true)
+    ScrollFrame:SetFullHeight(true)
+    parentContainer:AddChild(ScrollFrame)
+
+    local TextureColourContainer = AG:Create("InlineGroup")
+    TextureColourContainer:SetTitle("Texture & Colour Settings")
+    TextureColourContainer:SetFullWidth(true)
+    TextureColourContainer:SetLayout("Flow")
+    ScrollFrame:AddChild(TextureColourContainer)
+
+    local ForegroundTextureDropdown = AG:Create("LSM30_Statusbar")
+    ForegroundTextureDropdown:SetList(LSM:HashTable("statusbar"))
+    ForegroundTextureDropdown:SetLabel("Foreground Texture")
+    ForegroundTextureDropdown:SetValue(PowerBarDB.PowerBarFGTexture)
+    ForegroundTextureDropdown:SetRelativeWidth(0.5)
+    ForegroundTextureDropdown:SetCallback("OnValueChanged", function(widget, _, value) widget:SetValue(value) PowerBarDB.PowerBarFGTexture = value BCDM:UpdatePowerBar() end)
+    TextureColourContainer:AddChild(ForegroundTextureDropdown)
+
+    local FGColour = AG:Create("ColorPicker")
+    FGColour:SetLabel("Foreground Colour")
+    FGColour:SetColor(unpack(PowerBarDB.FGColour))
+    FGColour:SetRelativeWidth(0.5)
+    FGColour:SetCallback("OnValueChanged", function(_, _, r, g, b, a) PowerBarDB.FGColour = {r, g, b, a} BCDM:UpdatePowerBar() end)
+    TextureColourContainer:AddChild(FGColour)
+
+    local BackgroundTextureDropdown = AG:Create("LSM30_Statusbar")
+    BackgroundTextureDropdown:SetList(LSM:HashTable("statusbar"))
+    BackgroundTextureDropdown:SetLabel("Background Texture")
+    BackgroundTextureDropdown:SetValue(PowerBarDB.PowerBarBGTexture)
+    BackgroundTextureDropdown:SetRelativeWidth(0.5)
+    BackgroundTextureDropdown:SetCallback("OnValueChanged", function(widget, _, value) widget:SetValue(value) PowerBarDB.PowerBarBGTexture = value BCDM:UpdatePowerBar() end)
+    TextureColourContainer:AddChild(BackgroundTextureDropdown)
+
+    local BGColour = AG:Create("ColorPicker")
+    BGColour:SetLabel("Background Colour")
+    BGColour:SetColor(unpack(PowerBarDB.BGColour))
+    BGColour:SetRelativeWidth(0.5)
+    BGColour:SetCallback("OnValueChanged", function(_, _, r, g, b,  a) PowerBarDB.BGColour = {r, g, b, a} BCDM:UpdatePowerBar() end)
+    TextureColourContainer:AddChild(BGColour)
+
+    local LayoutContainer = AG:Create("InlineGroup")
+    LayoutContainer:SetTitle("Layout Settings")
+    LayoutContainer:SetFullWidth(true)
+    LayoutContainer:SetLayout("Flow")
+    ScrollFrame:AddChild(LayoutContainer)
+
+    local PowerBar_AnchorFrom = AG:Create("Dropdown")
+    PowerBar_AnchorFrom:SetLabel("Anchor From")
+    PowerBar_AnchorFrom:SetList(Anchors[1], Anchors[2])
+    PowerBar_AnchorFrom:SetValue(PowerBarDB.Anchors[1])
+    PowerBar_AnchorFrom:SetRelativeWidth(0.33)
+    PowerBar_AnchorFrom:SetCallback("OnValueChanged", function(_, _, value) PowerBarDB.Anchors[1] = value BCDM:UpdatePowerBar() end)
+    LayoutContainer:AddChild(PowerBar_AnchorFrom)
+
+    local PowerBar_AnchorParent = AG:Create("Dropdown")
+    PowerBar_AnchorParent:SetLabel("Anchor Parent Frame")
+    PowerBar_AnchorParent:SetList(PowerBarParents[1], PowerBarParents[2])
+    PowerBar_AnchorParent:SetValue(PowerBarDB.Anchors[2])
+    PowerBar_AnchorParent:SetRelativeWidth(0.33)
+    PowerBar_AnchorParent:SetCallback("OnValueChanged", function(_, _, value) PowerBarDB.Anchors[2] = value BCDM:UpdatePowerBar() end)
+    LayoutContainer:AddChild(PowerBar_AnchorParent)
+
+    local PowerBar_AnchorTo = AG:Create("Dropdown")
+    PowerBar_AnchorTo:SetLabel("Anchor To")
+    PowerBar_AnchorTo:SetList(Anchors[1], Anchors[2])
+    PowerBar_AnchorTo:SetValue(PowerBarDB.Anchors[3])
+    PowerBar_AnchorTo:SetRelativeWidth(0.33)
+    PowerBar_AnchorTo:SetCallback("OnValueChanged", function(_, _, value) PowerBarDB.Anchors[3] = value BCDM:UpdatePowerBar() end)
+    LayoutContainer:AddChild(PowerBar_AnchorTo)
+
+    local PowerBar_OffsetX = AG:Create("Slider")
+    PowerBar_OffsetX:SetLabel("Offset X")
+    PowerBar_OffsetX:SetValue(PowerBarDB.Anchors[4])
+    PowerBar_OffsetX:SetSliderValues(-2000, 2000, 1)
+    PowerBar_OffsetX:SetRelativeWidth(0.33)
+    PowerBar_OffsetX:SetCallback("OnValueChanged", function(_, _, value) PowerBarDB.Anchors[4] = value BCDM:UpdatePowerBar() end)
+    LayoutContainer:AddChild(PowerBar_OffsetX)
+
+    local PowerBar_OffsetY = AG:Create("Slider")
+    PowerBar_OffsetY:SetLabel("Offset Y")
+    PowerBar_OffsetY:SetValue(PowerBarDB.Anchors[5])
+    PowerBar_OffsetY:SetSliderValues(-2000, 2000, 1)
+    PowerBar_OffsetY:SetRelativeWidth(0.33)
+    PowerBar_OffsetY:SetCallback("OnValueChanged", function(_, _, value) PowerBarDB.Anchors[5] = value BCDM:UpdatePowerBar() end)
+    LayoutContainer:AddChild(PowerBar_OffsetY)
+
+    local PowerBar_Height = AG:Create("Slider")
+    PowerBar_Height:SetLabel("Power Bar Height")
+    PowerBar_Height:SetValue(PowerBarDB.Height)
+    PowerBar_Height:SetSliderValues(5, 50, 1)
+    PowerBar_Height:SetRelativeWidth(0.33)
+    PowerBar_Height:SetCallback("OnValueChanged", function(_, _, value) PowerBarDB.Height = value BCDM:UpdatePowerBar() end)
+    LayoutContainer:AddChild(PowerBar_Height)
+
+    local TextContainer = AG:Create("InlineGroup")
+    TextContainer:SetTitle("Text Settings")
+    TextContainer:SetFullWidth(true)
+    TextContainer:SetLayout("Flow")
+    ScrollFrame:AddChild(TextContainer)
+
+    local Text_AnchorFrom = AG:Create("Dropdown")
+    Text_AnchorFrom:SetLabel("Anchor From")
+    Text_AnchorFrom:SetList(Anchors[1], Anchors[2])
+    Text_AnchorFrom:SetValue(PowerBarDB.Text.Anchors[1])
+    Text_AnchorFrom:SetRelativeWidth(0.33)
+    Text_AnchorFrom:SetCallback("OnValueChanged", function(_, _, value) PowerBarDB.Text.Anchors[1] = value BCDM:UpdatePowerBar() end)
+    TextContainer:AddChild(Text_AnchorFrom)
+
+    local Text_AnchorTo = AG:Create("Dropdown")
+    Text_AnchorTo:SetLabel("Anchor To")
+    Text_AnchorTo:SetList(Anchors[1], Anchors[2])
+    Text_AnchorTo:SetValue(PowerBarDB.Text.Anchors[2])
+    Text_AnchorTo:SetRelativeWidth(0.33)
+    Text_AnchorTo:SetCallback("OnValueChanged", function(_, _, value) PowerBarDB.Text.Anchors[2] = value BCDM:UpdatePowerBar() end)
+    TextContainer:AddChild(Text_AnchorTo)
+
+    local Text_Colour = AG:Create("ColorPicker")
+    Text_Colour:SetLabel("Font Colour")
+    Text_Colour:SetColor(unpack(PowerBarDB.Text.Colour))
+    Text_Colour:SetRelativeWidth(0.33)
+    Text_Colour:SetCallback("OnValueChanged", function(_, _, r, g, b) PowerBarDB.Text.Colour = {r, g, b} BCDM:UpdatePowerBar() end)
+    TextContainer:AddChild(Text_Colour)
+
+    local Text_OffsetX = AG:Create("Slider")
+    Text_OffsetX:SetLabel("Offset X")
+    Text_OffsetX:SetValue(PowerBarDB.Text.Anchors[3])
+    Text_OffsetX:SetSliderValues(-200, 200, 1)
+    Text_OffsetX:SetRelativeWidth(0.33)
+    Text_OffsetX:SetCallback("OnValueChanged", function(_, _, value) PowerBarDB.Text.Anchors[3] = value BCDM:UpdatePowerBar() end)
+    TextContainer:AddChild(Text_OffsetX)
+
+    local Text_OffsetY = AG:Create("Slider")
+    Text_OffsetY:SetLabel("Offset Y")
+    Text_OffsetY:SetValue(PowerBarDB.Text.Anchors[4])
+    Text_OffsetY:SetSliderValues(-200, 200, 1)
+    Text_OffsetY:SetRelativeWidth(0.33)
+    Text_OffsetY:SetCallback("OnValueChanged", function(_, _, value) PowerBarDB.Text.Anchors[4] = value BCDM:UpdatePowerBar() end)
+    TextContainer:AddChild(Text_OffsetY)
+
+    local Text_FontSize = AG:Create("Slider")
+    Text_FontSize:SetLabel("Font Size")
+    Text_FontSize:SetValue(PowerBarDB.Text.FontSize)
+    Text_FontSize:SetSliderValues(8, 40, 1)
+    Text_FontSize:SetRelativeWidth(0.33)
+    Text_FontSize:SetCallback("OnValueChanged", function(_, _, value) PowerBarDB.Text.FontSize = value BCDM:UpdatePowerBar() end)
+    TextContainer:AddChild(Text_FontSize)
+
+    return ScrollFrame
+end
+
 function BCDM:CreateGUI()
     if OpenedGUI then return end
     if InCombatLockdown() then return end
@@ -268,8 +436,8 @@ function BCDM:CreateGUI()
     GUIFrame = AG:Create("Frame")
     GUIFrame:SetTitle("|T" .. BCDM.Icon .. ":16:16|t " .. BCDM.AddOnName)
     GUIFrame:SetLayout("Fill")
-    GUIFrame:SetWidth(700)
-    GUIFrame:SetHeight(400)
+    GUIFrame:SetWidth(900)
+    GUIFrame:SetHeight(600)
     GUIFrame:EnableResize(true)
     GUIFrame:SetCallback("OnClose", function(widget) AG:Release(widget) OpenedGUI = false BCDM:RefreshAllViewers() end)
 
@@ -290,6 +458,8 @@ function BCDM:CreateGUI()
             DrawCooldownSettings(Wrapper, "UtilityCooldownViewer")
         elseif MainGroup == "Buffs" then
             DrawCooldownSettings(Wrapper, "BuffIconCooldownViewer")
+        elseif MainGroup == "PowerBar" then
+            DrawPowerBarSettings(Wrapper)
         end
     end
 
@@ -300,6 +470,7 @@ function BCDM:CreateGUI()
         { text = "Essential", value = "Essential"},
         { text = "Utility", value = "Utility"},
         { text = "Buffs", value = "Buffs"},
+        { text = "Power Bar", value = "PowerBar"},
     })
     GUIContainerTabGroup:SetCallback("OnGroupSelected", SelectedGroup)
     GUIContainerTabGroup:SelectTab("General")
