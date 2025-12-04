@@ -1,0 +1,14 @@
+## Interface: 120000
+## Title: |cFF4080FFBetter|rCooldownManager
+## Author: Unhalted
+## SavedVariables: BetterCDMDB
+## Category-enUS: Cooldown Manager
+
+# Load Libraries
+Libs/Libs.xml
+
+# Load Core
+Core/Core.xml
+
+# Load Modules
+Modules/Modules.xml
