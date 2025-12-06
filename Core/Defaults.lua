@@ -4,6 +4,8 @@ BCDM.Defaults = {
     global = {
         UseGlobalProfile = false,
         GlobalProfile = "Default",
+        AutomaticallySetEditMode = false,
+        LayoutNumber = 3,
     },
     profile = {
         General = {

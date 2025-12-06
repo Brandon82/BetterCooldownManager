@@ -97,6 +97,19 @@ local ParentAnchors = {
 
 }
 
+local function FetchEditModeLayouts()
+    local allLayouts = {}
+    local layoutInfo = C_EditMode.GetLayouts()
+
+    if layoutInfo and layoutInfo.layouts then
+        for layoutID, info in pairs(layoutInfo.layouts) do
+            allLayouts[layoutID] = info.layoutName
+        end
+    end
+
+    return allLayouts
+end
+
 local function AddAnchor(anchorGroup, key, label)
     for _, existingKey in ipairs(anchorGroup[2]) do if existingKey == key then return end end
     anchorGroup[1][key] = label
@@ -154,6 +167,27 @@ local function DrawGeneralSettings(parentContainer)
     CooldownManagerIconZoomSlider:SetCallback("OnValueChanged", function(_, _, value) GeneralDB.IconZoom = value BCDM:RefreshAllViewers() end)
     CooldownManagerIconZoomSlider:SetRelativeWidth(0.33)
     ScrollFrame:AddChild(CooldownManagerIconZoomSlider)
+
+    local EditModeSettings = AG:Create("InlineGroup")
+    EditModeSettings:SetTitle("Edit Mode Settings")
+    EditModeSettings:SetFullWidth(true)
+    EditModeSettings:SetLayout("Flow")
+    ScrollFrame:AddChild(EditModeSettings)
+
+    local AutoSetEditMode = AG:Create("CheckBox")
+    AutoSetEditMode:SetLabel("Automatically Set Edit Mode on Login")
+    AutoSetEditMode:SetValue(BCDM.db.global.AutomaticallySetEditMode)
+    AutoSetEditMode:SetRelativeWidth(0.5)
+    AutoSetEditMode:SetCallback("OnValueChanged", function(_, _, value) BCDM.db.global.AutomaticallySetEditMode = value BCDM:SetEditMode(BCDM.db.global.LayoutNumber) BCDM:UpdateBCDM() end)
+    EditModeSettings:AddChild(AutoSetEditMode)
+
+    local LayoutNumber = AG:Create("Dropdown")
+    LayoutNumber:SetLabel("Edit Mode Layout Number")
+    LayoutNumber:SetList(FetchEditModeLayouts())
+    LayoutNumber:SetValue(BCDM.db.global.LayoutNumber)
+    LayoutNumber:SetRelativeWidth(0.5)
+    LayoutNumber:SetCallback("OnValueChanged", function(_, _, value) BCDM.db.global.LayoutNumber = value BCDM:SetEditMode(value) end)
+    EditModeSettings:AddChild(LayoutNumber)
 
     local FontContainer = AG:Create("InlineGroup")
     FontContainer:SetTitle("Font Settings")

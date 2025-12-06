@@ -19,7 +19,6 @@ local DefensiveSpells = {
     [48792] = true,         -- Icebound Fortitude
     -- Mage
     [342245] = true,        -- Alter Time
-    [55342] = true,         -- Mirror Images
     [11426] = true,         -- Ice Barrier
     [235313] = true,        -- Blazing Barrier
     [235450] = true,        -- Prismatic Barrier

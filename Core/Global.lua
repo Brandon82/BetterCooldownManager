@@ -158,3 +158,9 @@ function BCDM:CopyTable(defaultTable)
     end
     return newTable
 end
+
+function BCDM:SetEditMode(editModeLayout)
+    if BCDM.db.global.AutomaticallySetEditMode == false then return end
+    if not editModeLayout or type(editModeLayout) ~= "number" then return end
+    C_EditMode.SetActiveLayout(editModeLayout + 2)
+end
