@@ -201,30 +201,25 @@ local function CreateSecondaryPowerBar()
 
     function BCDM:UpdateSecondary()
         local secondaryPowerResource = DetectSecondaryPower()
-        if not secondaryPowerResource then
-            SecondaryPowerBar:Hide()
-            ClearTicks()
-            SecondaryPowerBar.StatusBar:SetValue(0)
-            return
-        end
-        if secondaryPowerResource == "SOUL" then
-         ClearTicks()
+        if not secondaryPowerResource then SecondaryPowerBar:Hide() ClearTicks() SecondaryPowerBar.StatusBar:SetValue(0) return end
 
-        local soulBar = _G["DemonHunterSoulFragmentsBar"]
+        if secondaryPowerResource == "SOUL" then
+            ClearTicks()
+            local soulBar = _G["DemonHunterSoulFragmentsBar"]
             if soulBar then
                 if not soulBar:IsShown() then soulBar:Show() soulBar:SetAlpha(0) end
-
                 local current = soulBar:GetValue() or 0
                 local min, max = soulBar:GetMinMaxValues()
-
                 SecondaryPowerBar.StatusBar:SetMinMaxValues(min, max)
                 SecondaryPowerBar.StatusBar:SetValue(current)
                 SecondaryPowerBar.StatusBar:SetStatusBarColor(FetchPowerBarColour("player"))
             else
                 SecondaryPowerBar.StatusBar:SetValue(0)
             end
+            SecondaryPowerBar:Show()
             return
         end
+
         if secondaryPowerResource == "STAGGER" then
             ClearTicks()
             local current = UnitStagger("player") or 0
@@ -234,6 +229,7 @@ local function CreateSecondaryPowerBar()
             SecondaryPowerBar.StatusBar:SetStatusBarColor(FetchPowerBarColour("player"))
             return
         end
+
         if secondaryPowerResource == Enum.PowerType.Runes then
             ClearTicks()
             SecondaryPowerBar.StatusBar:Hide()
@@ -241,6 +237,7 @@ local function CreateSecondaryPowerBar()
             UpdateRuneDisplay()
             return
         end
+
         if secondaryPowerResource == Enum.PowerType.SoulShards then
             local currentDisplay = UnitPower("player", secondaryPowerResource)
             local currentRaw = UnitPower("player", secondaryPowerResource, true)
@@ -250,13 +247,16 @@ local function CreateSecondaryPowerBar()
             CreateTicks(5)
             return
         end
+
         local current = UnitPower("player", secondaryPowerResource) or 0
         local max = UnitPowerMax("player", secondaryPowerResource) or 0
+
         if max <= 0 then
             ClearTicks()
             SecondaryPowerBar.StatusBar:SetValue(0)
             return
         end
+
         SecondaryPowerBar.StatusBar:SetMinMaxValues(0, max)
         SecondaryPowerBar.StatusBar:SetValue(current)
         SecondaryPowerBar.StatusBar:SetStatusBarColor(FetchPowerBarColour("player"))
@@ -346,6 +346,7 @@ function BCDM:UpdateSecondaryPowerBar()
         BCDM.SecondaryPowerBar:SetBackdropColor(unpack(SecondaryPowerBarDB.BGColour))
         BCDM.SecondaryPowerBar.StatusBar:SetStatusBarTexture(BCDM.Media.PowerBarFGTexture)
         BCDM.SecondaryPowerBar.StatusBar:SetStatusBarColor(FetchPowerBarColour("player"))
+        BCDM:RegisterSecondaryBarEvents(BCDM.SecondaryPowerBar)
         BCDM:UpdateSecondary()
     end
 end
