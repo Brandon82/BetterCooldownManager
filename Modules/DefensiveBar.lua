@@ -206,7 +206,6 @@ function BCDM:UpdateDefensiveIcons()
     local CooldownManagerDB = BCDM.db.profile
     local GeneralDB = CooldownManagerDB.General
     local DefensiveDB = CooldownManagerDB.Defensive
-    local CooldownTextDB = GeneralDB.CooldownText
     BCDM.DefensiveContainer:ClearAllPoints()
     BCDM.DefensiveContainer:SetPoint(DefensiveDB.Anchors[1], DefensiveDB.Anchors[2], DefensiveDB.Anchors[3], DefensiveDB.Anchors[4], DefensiveDB.Anchors[5])
     for _, icon in ipairs(BCDM.DefensiveBar) do
