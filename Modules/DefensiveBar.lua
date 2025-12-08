@@ -40,6 +40,7 @@ local DefensiveSpells = {
         [86659] = true,         -- Guardian of Ancient Kings
         [31850] = true,         -- Ardent Defender
         [204018] = true,        -- Blessing of Spellwarding
+        [633] = true,           -- Lay on Hands
     },
     -- Shaman
     ["SHAMAN"] = {
