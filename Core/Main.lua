@@ -30,6 +30,6 @@ function AddOn:OnEnable()
     BCDM:SetEditMode(BCDM.db.global.LayoutNumber)
     BCDM:SetupCooldownManager()
     BCDM:SetupPowerBar()
-    C_Timer.After(0.5, function() BCDM:SetupSecondaryPowerBar() end)
+    BCDM:SetupSecondaryPowerBar()
     BCDM:SetupCastBar()
 end
