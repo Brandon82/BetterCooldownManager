@@ -1823,7 +1823,7 @@ function BCDM:CreateGUI()
     GUIFrame:SetWidth(900)
     GUIFrame:SetHeight(600)
     GUIFrame:EnableResize(true)
-    GUIFrame:SetCallback("OnClose", function(widget) AG:Release(widget) OpenedGUI = false BCDM:RefreshAllViewers() end)
+    GUIFrame:SetCallback("OnClose", function(widget) AG:Release(widget) OpenedGUI = false BCDM:RefreshAllViewers() if CooldownViewerSettings:IsShown() then CooldownViewerSettings:Hide() end end)
 
     local function SelectedGroup(GUIContainer, _, MainGroup)
         GUIContainer:ReleaseChildren()
