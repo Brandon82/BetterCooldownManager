@@ -101,8 +101,8 @@ BCDM.Defaults = {
         },
         Custom = {
             IconSize = {36, 36},
-            Anchors = {"BOTTOMRIGHT", "UUF_Player", "TOPRIGHT", 0, 1},
-            GrowthDirection = "LEFT",
+            Anchors = {"TOPLEFT", "UtilityCooldownViewer", "BOTTOMLEFT", -1, -2},
+            GrowthDirection = "RIGHT",
             Spacing = 1,
             Count = {
                 FontSize = 12,
@@ -347,8 +347,8 @@ BCDM.Defaults = {
         },
         AdditionalCustom = {
             IconSize = {36, 36},
-            Anchors = {"BOTTOMLEFT", "UUF_Player", "TOPLEFT", 0, 1},
-            GrowthDirection = "RIGHT",
+            Anchors = {"TOPRIGHT", "UtilityCooldownViewer", "BOTTOMRIGHT", 1, -2},
+            GrowthDirection = "LEFT",
             Spacing = 1,
             Count = {
                 FontSize = 12,
@@ -593,7 +593,7 @@ BCDM.Defaults = {
         },
         Items = {
             IconSize = {36, 36},
-            Anchors = {"TOPLEFT", "UUF_Player", "BOTTOMLEFT", 0, -1},
+            Anchors = {"TOP", "UtilityCooldownViewer", "BOTTOM", 0, -2},
             GrowthDirection = "RIGHT",
             Spacing = 1,
             Count = {
