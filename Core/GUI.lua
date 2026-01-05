@@ -1079,7 +1079,7 @@ local function DrawAdditionalCustomBarSettings(parentContainer)
     local specName = select(2, GetSpecializationInfo(GetSpecialization())):gsub(" ", "")
 
     local function BuildCustomSpellList()
-        local profile = BCDM.db.profile.AdditionalCustom.AdditionalCustomSpells[playerClass][specName:upper()] or {}
+        local profile = BCDM.db.profile.AdditionalCustom.CustomSpells[playerClass][specName:upper()] or {}
         if not profile then return end
         BCDMGUI.additionalCustomContainer:ReleaseChildren()
         local iconOrder = {}

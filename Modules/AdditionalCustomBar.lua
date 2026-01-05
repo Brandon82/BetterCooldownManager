@@ -395,10 +395,10 @@ function BCDM:SetupAdditionalCustomIcons()
     local specName = select(2, GetSpecializationInfo(GetSpecialization())):gsub(" ", "")
     -- Make a DB entry if it doesn't exist
     if not CooldownManagerDB.AdditionalCustom then CooldownManagerDB.AdditionalCustom = {} end
-    if not CooldownManagerDB.AdditionalCustom.AdditionalCustomSpells then CooldownManagerDB.AdditionalCustom.AdditionalCustomSpells = {} end
-    if not CooldownManagerDB.AdditionalCustom.AdditionalCustomSpells[class] then CooldownManagerDB.AdditionalCustom.AdditionalCustomSpells[class] = {} end
-    if not CooldownManagerDB.AdditionalCustom.AdditionalCustomSpells[class][specName:upper()] then CooldownManagerDB.AdditionalCustom.AdditionalCustomSpells[class][specName:upper()] = {} end
-    local spellList = CooldownManagerDB.AdditionalCustom.AdditionalCustomSpells[class][specName:upper()] or {}
+    if not CooldownManagerDB.AdditionalCustom.CustomSpells then CooldownManagerDB.AdditionalCustom.CustomSpells = {} end
+    if not CooldownManagerDB.AdditionalCustom.CustomSpells[class] then CooldownManagerDB.AdditionalCustom.CustomSpells[class] = {} end
+    if not CooldownManagerDB.AdditionalCustom.CustomSpells[class][specName:upper()] then CooldownManagerDB.AdditionalCustom.CustomSpells[class][specName:upper()] = {} end
+    local spellList = CooldownManagerDB.AdditionalCustom.CustomSpells[class][specName:upper()] or {}
     local iconOrder = {}
     for spellId, data in pairs(spellList) do
         if data.isActive then
@@ -434,10 +434,10 @@ function BCDM:ResetAdditionalCustomIcons()
     local _, class = UnitClass("player")
     local specName = select(2, GetSpecializationInfo(GetSpecialization())):gsub(" ", "")
     if not CooldownManagerDB.AdditionalCustom then CooldownManagerDB.AdditionalCustom = {} end
-    if not CooldownManagerDB.AdditionalCustom.AdditionalCustomSpells then CooldownManagerDB.AdditionalCustom.AdditionalCustomSpells = {} end
-    if not CooldownManagerDB.AdditionalCustom.AdditionalCustomSpells[class] then CooldownManagerDB.AdditionalCustom.AdditionalCustomSpells[class] = {} end
-    if not CooldownManagerDB.AdditionalCustom.AdditionalCustomSpells[class][specName:upper()] then CooldownManagerDB.AdditionalCustom.AdditionalCustomSpells[class][specName:upper()] = {} end
-    local spellList = CooldownManagerDB.AdditionalCustom.AdditionalCustomSpells[class][specName:upper()] or {}
+    if not CooldownManagerDB.AdditionalCustom.CustomSpells then CooldownManagerDB.AdditionalCustom.CustomSpells = {} end
+    if not CooldownManagerDB.AdditionalCustom.CustomSpells[class] then CooldownManagerDB.AdditionalCustom.CustomSpells[class] = {} end
+    if not CooldownManagerDB.AdditionalCustom.CustomSpells[class][specName:upper()] then CooldownManagerDB.AdditionalCustom.CustomSpells[class][specName:upper()] = {} end
+    local spellList = CooldownManagerDB.AdditionalCustom.CustomSpells[class][specName:upper()] or {}
     local iconOrder = {}
     for spellId, data in pairs(spellList) do
         if data.isActive then
@@ -491,22 +491,22 @@ function BCDM:CopyAdditionalCustomSpellsToDB()
     local profileDB = BCDM.db.profile
     local sourceTable = BCDM.AdditionalCustomSpells
     local _, class = UnitClass("player")
-    profileDB.AdditionalCustom.AdditionalCustomSpells[class] = profileDB.AdditionalCustom.AdditionalCustomSpells[class] or {}
+    profileDB.AdditionalCustom.CustomSpells[class] = profileDB.AdditionalCustom.CustomSpells[class] or {}
     for specName, spellList in pairs(sourceTable[class] or {}) do
-        profileDB.AdditionalCustom.AdditionalCustomSpells[class][specName] = profileDB.AdditionalCustom.AdditionalCustomSpells[class][specName] or {}
+        profileDB.AdditionalCustom.CustomSpells[class][specName] = profileDB.AdditionalCustom.CustomSpells[class][specName] or {}
         for spellId, spellData in pairs(spellList) do
-            if profileDB.AdditionalCustom.AdditionalCustomSpells[class][specName][spellId] == nil then
+            if profileDB.AdditionalCustom.CustomSpells[class][specName][spellId] == nil then
                 local nextIndex = 1
-                for _, existingData in pairs(profileDB.AdditionalCustom.AdditionalCustomSpells[class][specName]) do
+                for _, existingData in pairs(profileDB.AdditionalCustom.CustomSpells[class][specName]) do
                     if existingData.layoutIndex and existingData.layoutIndex >= nextIndex then
                         nextIndex = existingData.layoutIndex + 1
                     end
                 end
-                profileDB.AdditionalCustom.AdditionalCustomSpells[class][specName][spellId] = { isActive = spellData.isActive, layoutIndex = spellData.layoutIndex or nextIndex, }
+                profileDB.AdditionalCustom.CustomSpells[class][specName][spellId] = { isActive = spellData.isActive, layoutIndex = spellData.layoutIndex or nextIndex, }
             end
         end
     end
-    for specName, spellList in pairs(profileDB.AdditionalCustom.AdditionalCustomSpells[class] or {}) do
+    for specName, spellList in pairs(profileDB.AdditionalCustom.CustomSpells[class] or {}) do
         local layoutIndex = 1
         local orderedSpells = {}
         for id, data in pairs(spellList) do
@@ -528,9 +528,9 @@ function BCDM:AddAdditionalCustomSpell(value)
     local profileDB = BCDM.db.profile
     local _, class = UnitClass("player")
     local specName = select(2, GetSpecializationInfo(GetSpecialization())):gsub(" ", ""):upper()
-    profileDB.AdditionalCustom.AdditionalCustomSpells[class] = profileDB.AdditionalCustom.AdditionalCustomSpells[class] or {}
-    profileDB.AdditionalCustom.AdditionalCustomSpells[class][specName] = profileDB.AdditionalCustom.AdditionalCustomSpells[class][specName] or {}
-    local specTable = profileDB.AdditionalCustom.AdditionalCustomSpells[class][specName]
+    profileDB.AdditionalCustom.CustomSpells[class] = profileDB.AdditionalCustom.CustomSpells[class] or {}
+    profileDB.AdditionalCustom.CustomSpells[class][specName] = profileDB.AdditionalCustom.CustomSpells[class][specName] or {}
+    local specTable = profileDB.AdditionalCustom.CustomSpells[class][specName]
     local maxIndex = 0
     for _, data in pairs(specTable) do
         if data.layoutIndex and data.layoutIndex > maxIndex then
@@ -550,7 +550,7 @@ function BCDM:RemoveAdditionalCustomSpell(value)
     local profileDB = BCDM.db.profile
     local _, class = UnitClass("player")
     local specName = select(2, GetSpecializationInfo(GetSpecialization())):gsub(" ", ""):upper()
-    local specTable = profileDB.AdditionalCustom.AdditionalCustomSpells[class] and profileDB.AdditionalCustom.AdditionalCustomSpells[class][specName]
+    local specTable = profileDB.AdditionalCustom.CustomSpells[class] and profileDB.AdditionalCustom.CustomSpells[class][specName]
     if not specTable then return end
     specTable[spellId] = nil
     local layoutIndex = 1
@@ -570,8 +570,8 @@ function BCDM:ResetAdditionalCustomSpells()
     local profileDB = BCDM.db.profile
     local _, class = UnitClass("player")
     local specName = select(2, GetSpecializationInfo(GetSpecialization())):gsub(" ", ""):upper()
-    if profileDB.AdditionalCustom.AdditionalCustomSpells[class] then
-        profileDB.AdditionalCustom.AdditionalCustomSpells[class][specName] = nil
+    if profileDB.AdditionalCustom.CustomSpells[class] then
+        profileDB.AdditionalCustom.CustomSpells[class][specName] = nil
     end
     BCDM:CopyAdditionalCustomSpellsToDB()
     BCDM:ResetAdditionalCustomIcons()
@@ -582,7 +582,7 @@ function BCDM:MoveAdditionalCustomSpell(spellId, value)
     local profileDB = BCDM.db.profile
     local _, class = UnitClass("player")
     local specName = select(2, GetSpecializationInfo(GetSpecialization())):gsub(" ", ""):upper()
-    local specTable = profileDB.AdditionalCustom.AdditionalCustomSpells[class] and profileDB.AdditionalCustom.AdditionalCustomSpells[class][specName]
+    local specTable = profileDB.AdditionalCustom.CustomSpells[class] and profileDB.AdditionalCustom.CustomSpells[class][specName]
     if not specTable or not specTable[spellId] then return end
     if specTable[spellId].layoutIndex + value < 1 then return end
     for _, data in pairs(specTable) do

@@ -122,6 +122,8 @@ function BCDM:UpdateBCDM()
     BCDM:UpdateSecondaryPowerBar()
     BCDM:RefreshAllViewers()
     BCDM:ResetCustomIcons()
+    BCDM:ResetAdditionalCustomIcons()
+    BCDM:ResetItemIcons()
 end
 
 function BCDM:CreatePrompt(title, text, onAccept, onCancel, acceptText, cancelText)
