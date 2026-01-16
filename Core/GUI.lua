@@ -2,6 +2,7 @@ local _, BCDM = ...
 local LSM = BCDM.LSM
 local AG = BCDM.AG
 local isGUIOpen = false
+local isUnitDeathKnight = BCDM.IS_DEATHKNIGHT
 
 local AnchorPoints = { { ["TOPLEFT"] = "Top Left", ["TOP"] = "Top", ["TOPRIGHT"] = "Top Right", ["LEFT"] = "Left", ["CENTER"] = "Center", ["RIGHT"] = "Right", ["BOTTOMLEFT"] = "Bottom Left", ["BOTTOM"] = "Bottom", ["BOTTOMRIGHT"] = "Bottom Right" }, { "TOPLEFT", "TOP", "TOPRIGHT", "LEFT", "CENTER", "RIGHT", "BOTTOMLEFT", "BOTTOM", "BOTTOMRIGHT", } }
 
@@ -28,6 +29,11 @@ local PowerNames = {
     ["SOUL"] = "Soul",
     ["RUNE_RECHARGE"] = "Rune on Cooldown",
     ["CHARGED_COMBO_POINTS"] = "Charged Combo Points",
+    ["RUNES"] = {
+        FROST = "Frost",
+        UNHOLY = "Unholy",
+        BLOOD = "Blood"
+    }
 }
 
 local ClassToPrettyClass = {
@@ -463,6 +469,25 @@ local function CreateGeneralSettings(parentContainer)
         PowerColour:SetHasAlpha(false)
         PowerColour:SetRelativeWidth(0.15)
         SecondaryColoursContainer:AddChild(PowerColour)
+    end
+
+    if isUnitDeathKnight then
+        local runeColourContainer = AG:Create("InlineGroup")
+        runeColourContainer:SetTitle("Death Knight Rune Colours")
+        runeColourContainer:SetFullWidth(true)
+        runeColourContainer:SetLayout("Flow")
+        CustomColoursContainer:AddChild(runeColourContainer)
+        for _, runeType in ipairs({"FROST", "UNHOLY", "BLOOD"}) do
+            local powerColour = BCDM.db.profile.General.Colours.SecondaryPower.RUNES[runeType]
+            local PowerColour = AG:Create("ColorPicker")
+            PowerColour:SetLabel("Rune: " .. PowerNames["RUNES"][runeType])
+            local R, G, B = unpack(powerColour)
+            PowerColour:SetColor(R, G, B)
+            PowerColour:SetCallback("OnValueChanged", function(widget, _, r, g, b) BCDM.db.profile.General.Colours.SecondaryPower.RUNES[runeType] = {r, g, b} BCDM:UpdateBCDM() end)
+            PowerColour:SetHasAlpha(false)
+            PowerColour:SetRelativeWidth(0.32)
+            runeColourContainer:AddChild(PowerColour)
+        end
     end
 
     local ResetPowerColoursButton = AG:Create("Button")
@@ -1463,35 +1488,44 @@ local function CreateSecondaryPowerBarSettings(parentContainer)
     enabledCheckbox:SetLabel("Enable Power Bar")
     enabledCheckbox:SetValue(BCDM.db.profile.SecondaryPowerBar.Enabled)
     enabledCheckbox:SetCallback("OnValueChanged", function(self, _, value) BCDM.db.profile.SecondaryPowerBar.Enabled = value BCDM:UpdateSecondaryPowerBar() RefreshSecondaryPowerBarGUISettings() end)
-    enabledCheckbox:SetRelativeWidth(0.25)
+    enabledCheckbox:SetRelativeWidth(isUnitDeathKnight and 1 or 0.25)
     toggleContainer:AddChild(enabledCheckbox)
 
     local colourByTypeCheckbox = AG:Create("CheckBox")
     colourByTypeCheckbox:SetLabel("Colour By Power Type")
     colourByTypeCheckbox:SetValue(BCDM.db.profile.SecondaryPowerBar.ColourByType)
     colourByTypeCheckbox:SetCallback("OnValueChanged", function(self, _, value) BCDM.db.profile.SecondaryPowerBar.ColourByType = value BCDM:UpdateSecondaryPowerBar() RefreshSecondaryPowerBarGUISettings() end)
-    colourByTypeCheckbox:SetRelativeWidth(0.25)
+    colourByTypeCheckbox:SetRelativeWidth(isUnitDeathKnight and 0.33 or 0.25)
     toggleContainer:AddChild(colourByTypeCheckbox)
 
     local colourByClassCheckbox = AG:Create("CheckBox")
     colourByClassCheckbox:SetLabel("Colour By Class")
     colourByClassCheckbox:SetValue(BCDM.db.profile.SecondaryPowerBar.ColourByClass)
     colourByClassCheckbox:SetCallback("OnValueChanged", function(self, _, value) BCDM.db.profile.SecondaryPowerBar.ColourByClass = value BCDM:UpdateSecondaryPowerBar() RefreshSecondaryPowerBarGUISettings() end)
-    colourByClassCheckbox:SetRelativeWidth(0.25)
+    colourByClassCheckbox:SetRelativeWidth(isUnitDeathKnight and 0.33 or 0.25)
     toggleContainer:AddChild(colourByClassCheckbox)
+
+    if isUnitDeathKnight then
+        local colourRunesBySpecCheckbox = AG:Create("CheckBox")
+        colourRunesBySpecCheckbox:SetLabel("Colour by Specialization")
+        colourRunesBySpecCheckbox:SetValue(BCDM.db.profile.SecondaryPowerBar.ColourBySpec)
+        colourRunesBySpecCheckbox:SetCallback("OnValueChanged", function(self, _, value) BCDM.db.profile.SecondaryPowerBar.ColourBySpec = value BCDM:UpdateSecondaryPowerBar() RefreshSecondaryPowerBarGUISettings() end)
+        colourRunesBySpecCheckbox:SetRelativeWidth(0.33)
+        toggleContainer:AddChild(colourRunesBySpecCheckbox)
+    end
 
     local matchAnchorWidthCheckbox = AG:Create("CheckBox")
     matchAnchorWidthCheckbox:SetLabel("Match Width Of Anchor")
     matchAnchorWidthCheckbox:SetValue(BCDM.db.profile.SecondaryPowerBar.MatchWidthOfAnchor)
     matchAnchorWidthCheckbox:SetCallback("OnValueChanged", function(self, _, value) BCDM.db.profile.SecondaryPowerBar.MatchWidthOfAnchor = value BCDM:UpdateSecondaryPowerBar() RefreshSecondaryPowerBarGUISettings() end)
-    matchAnchorWidthCheckbox:SetRelativeWidth(0.25)
+    matchAnchorWidthCheckbox:SetRelativeWidth(isUnitDeathKnight and 0.33 or 0.25)
     toggleContainer:AddChild(matchAnchorWidthCheckbox)
 
     local foregroundColourPicker = AG:Create("ColorPicker")
     foregroundColourPicker:SetLabel("Foreground Colour")
     foregroundColourPicker:SetColor(BCDM.db.profile.SecondaryPowerBar.ForegroundColour[1], BCDM.db.profile.SecondaryPowerBar.ForegroundColour[2], BCDM.db.profile.SecondaryPowerBar.ForegroundColour[3], BCDM.db.profile.SecondaryPowerBar.ForegroundColour[4])
     foregroundColourPicker:SetCallback("OnValueChanged", function(self, _, r, g, b, a) BCDM.db.profile.SecondaryPowerBar.ForegroundColour = {r, g, b, a} BCDM:UpdateSecondaryPowerBar() end)
-    foregroundColourPicker:SetRelativeWidth(0.5)
+    foregroundColourPicker:SetRelativeWidth(0.33)
     foregroundColourPicker:SetHasAlpha(true)
     toggleContainer:AddChild(foregroundColourPicker)
 
@@ -1499,7 +1533,7 @@ local function CreateSecondaryPowerBarSettings(parentContainer)
     backgroundColourPicker:SetLabel("Background Colour")
     backgroundColourPicker:SetColor(BCDM.db.profile.SecondaryPowerBar.BackgroundColour[1], BCDM.db.profile.SecondaryPowerBar.BackgroundColour[2], BCDM.db.profile.SecondaryPowerBar.BackgroundColour[3], BCDM.db.profile.SecondaryPowerBar.BackgroundColour[4])
     backgroundColourPicker:SetCallback("OnValueChanged", function(self, _, r, g, b, a) BCDM.db.profile.SecondaryPowerBar.BackgroundColour = {r, g, b, a} BCDM:UpdateSecondaryPowerBar() end)
-    backgroundColourPicker:SetRelativeWidth(0.5)
+    backgroundColourPicker:SetRelativeWidth(0.33)
     backgroundColourPicker:SetHasAlpha(true)
     toggleContainer:AddChild(backgroundColourPicker)
 

@@ -55,6 +55,20 @@ local function FetchPowerBarColour()
             local _, class = UnitClass("player")
             local classColour = RAID_CLASS_COLORS[class]
             if classColour then return classColour.r, classColour.g, classColour.b, 1 end
+        elseif BCDM.IS_DEATHKNIGHT and SecondaryPowerBarDB.ColourBySpec then
+            local spec  = GetSpecialization()
+            local specID = GetSpecializationInfo(spec)
+            local runeColours = GeneralDB.Colours.SecondaryPower["RUNES"]
+            if specID == 250 and runeColours and runeColours.BLOOD then
+                local colour = runeColours.BLOOD
+                return colour[1], colour[2], colour[3], colour[4] or 1
+            elseif specID == 251 and runeColours and runeColours.FROST then
+                local colour = runeColours.FROST
+                return colour[1], colour[2], colour[3], colour[4] or 1
+            elseif specID == 252 and runeColours and runeColours.UNHOLY then
+                local colour = runeColours.UNHOLY
+                return colour[1], colour[2], colour[3], colour[4] or 1
+            end
         else
             return SecondaryPowerBarDB.ForegroundColour[1], SecondaryPowerBarDB.ForegroundColour[2], SecondaryPowerBarDB.ForegroundColour[3], SecondaryPowerBarDB.ForegroundColour[4] or 1
         end

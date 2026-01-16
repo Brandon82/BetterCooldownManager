@@ -47,7 +47,12 @@ local Defaults = {
                     STAGGER                        = { 0.00, 1.00, 0.59, 1.0 },
                     RUNE_RECHARGE                  = { 0.5, 0.5, 0.5, 1.0 },
                     ESSENCE_RECHARGE               = { 0.5, 0.5, 0.5, 1.0 },
-                    CHARGED_COMBO_POINTS           = { 0.25, 0.5, 1.00, 1.0}
+                    CHARGED_COMBO_POINTS           = { 0.25, 0.5, 1.00, 1.0},
+                    RUNES = {
+                        FROST = {0.25, 1.00, 1.00, 1.0},
+                        UNHOLY = {0.25, 1.00, 0.25, 1.0},
+                        BLOOD = {1.00, 0.25, 0.25, 1.0}
+                    }
                 }
             }
         },
@@ -279,6 +284,7 @@ local Defaults = {
             MatchWidthOfAnchor = true,
             ColourByType = true,
             ColourByClass = false,
+            ColourBySpec = false,
             BackgroundColour = {34/255, 34/255, 34/255, 1},
             ForegroundColour = {34/255, 34/255, 34/255, 1},
             Layout = {"BOTTOM", "BCDM_PowerBar", "TOP", 0, 1},
