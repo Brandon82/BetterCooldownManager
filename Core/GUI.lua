@@ -147,6 +147,16 @@ local function FetchSpellInformation(spellId)
     end
 end
 
+local function DeepDisable(widget, disabled, skipWidget)
+    if widget == skipWidget then return end
+    if widget.SetDisabled then widget:SetDisabled(disabled) end
+    if widget.children then
+        for _, child in ipairs(widget.children) do
+            DeepDisable(child, disabled, skipWidget)
+        end
+    end
+end
+
 local function DetectSecondaryPower()
     local class = select(2, UnitClass("player"))
     local spec  = GetSpecialization()
@@ -2072,7 +2082,7 @@ local function CreateProfileSettings(containerParent)
     UseGlobalProfileToggle:SetLabel("Use Global Profile Settings")
     UseGlobalProfileToggle:SetValue(BCDM.db.global.UseGlobalProfile)
     UseGlobalProfileToggle:SetRelativeWidth(0.5)
-    UseGlobalProfileToggle:SetCallback("OnValueChanged", function(_, _, value) RefreshProfiles() BCDM.db.global.UseGlobalProfile = value if value and BCDM.db.global.GlobalProfile and BCDM.db.global.GlobalProfile ~= "" then BCDM.db:SetProfile(BCDM.db.global.GlobalProfile) BCDM:UpdateBCDM() end GlobalProfileDropdown:SetDisabled(not value) for _, child in ipairs(ProfileContainer.children) do if child ~= UseGlobalProfileToggle and child ~= GlobalProfileDropdown then BCDMG.DeepDisable(child, value) end end BCDM:UpdateBCDM() RefreshProfiles() end)
+    UseGlobalProfileToggle:SetCallback("OnValueChanged", function(_, _, value) RefreshProfiles() BCDM.db.global.UseGlobalProfile = value if value and BCDM.db.global.GlobalProfile and BCDM.db.global.GlobalProfile ~= "" then BCDM.db:SetProfile(BCDM.db.global.GlobalProfile) BCDM:UpdateBCDM() end GlobalProfileDropdown:SetDisabled(not value) for _, child in ipairs(ProfileContainer.children) do if child ~= UseGlobalProfileToggle and child ~= GlobalProfileDropdown then DeepDisable(child, value, GlobalProfileDropdown) end end BCDM:UpdateBCDM() RefreshProfiles() end)
     ProfileContainer:AddChild(UseGlobalProfileToggle)
 
     GlobalProfileDropdown = AG:Create("Dropdown")
@@ -2160,7 +2170,7 @@ local function CreateProfileSettings(containerParent)
     ImportProfileButton:SetCallback("OnClick", function() if ImportingEditBox:GetText() ~= "" then BCDM:ImportSavedVariables(ImportingEditBox:GetText()) ImportingEditBox:SetText("") end end)
     SharingContainer:AddChild(ImportProfileButton)
     GlobalProfileDropdown:SetDisabled(not BCDM.db.global.UseGlobalProfile)
-    if BCDM.db.global.UseGlobalProfile then for _, child in ipairs(ProfileContainer.children) do if child ~= UseGlobalProfileToggle and child ~= GlobalProfileDropdown then BCDMG.DeepDisable(child, true) end end end
+    if BCDM.db.global.UseGlobalProfile then for _, child in ipairs(ProfileContainer.children) do if child ~= UseGlobalProfileToggle and child ~= GlobalProfileDropdown then DeepDisable(child, true, GlobalProfileDropdown) end end end
 
     ScrollFrame:DoLayout()
 
