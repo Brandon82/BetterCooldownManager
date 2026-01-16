@@ -1,36 +1,44 @@
 local _, BCDM = ...
 
-local function ApplyCooldownText(cooldown)
+local function FetchCooldownTextRegion(cooldown)
     if not cooldown then return end
+    for _, region in ipairs({ cooldown:GetRegions() }) do
+        if region:GetObjectType() == "FontString" then
+            return region
+        end
+    end
+end
+
+local function ApplyCooldownText()
     local CooldownManagerDB = BCDM.db.profile
     local GeneralDB = CooldownManagerDB.General
     local CooldownTextDB = CooldownManagerDB.CooldownManager.General.CooldownText
-    if not cooldown.CustomBarCooldownText then
-        for _, region in ipairs({ cooldown:GetRegions() }) do
-            if region:GetObjectType() == "FontString" then
-                cooldown.CustomBarCooldownText = region
-                break
+    local Viewer = _G["BCDM_CustomItemBar"]
+    if not Viewer then return end
+    for _, icon in ipairs({ Viewer:GetChildren() }) do
+        if icon and icon.Cooldown then
+            local textRegion = FetchCooldownTextRegion(icon.Cooldown)
+            if textRegion then
+                if CooldownTextDB.ScaleByIconSize then
+                    local iconWidth = icon:GetWidth()
+                    local scaleFactor = iconWidth / 36
+                    textRegion:SetFont(BCDM.Media.Font, CooldownTextDB.FontSize * scaleFactor, GeneralDB.Fonts.FontFlag)
+                else
+                    textRegion:SetFont(BCDM.Media.Font, CooldownTextDB.FontSize, GeneralDB.Fonts.FontFlag)
+                end
+                textRegion:SetTextColor(CooldownTextDB.Colour[1], CooldownTextDB.Colour[2], CooldownTextDB.Colour[3], 1)
+                textRegion:ClearAllPoints()
+                textRegion:SetPoint(CooldownTextDB.Layout[1], icon, CooldownTextDB.Layout[2], CooldownTextDB.Layout[3], CooldownTextDB.Layout[4])
+                if GeneralDB.Fonts.Shadow.Enabled then
+                    textRegion:SetShadowColor(GeneralDB.Fonts.Shadow.Colour[1], GeneralDB.Fonts.Shadow.Colour[2], GeneralDB.Fonts.Shadow.Colour[3], GeneralDB.Fonts.Shadow.Colour[4])
+                    textRegion:SetShadowOffset(GeneralDB.Fonts.Shadow.OffsetX, GeneralDB.Fonts.Shadow.OffsetY)
+                else
+                    textRegion:SetShadowColor(0, 0, 0, 0)
+                    textRegion:SetShadowOffset(0, 0)
+                end
             end
         end
     end
-    local region = cooldown.CustomBarCooldownText
-    if not region then return end
-    if CooldownTextDB.ScaleByIconSize then
-        local iconWidth = cooldown:GetWidth()
-        local scaleFactor = iconWidth / 36
-        region:SetFont(BCDM.Media.Font, CooldownTextDB.FontSize * scaleFactor, GeneralDB.FontFlag)
-    else
-        region:SetFont(BCDM.Media.Font, CooldownTextDB.FontSize, GeneralDB.FontFlag)
-    end
-    region:SetTextColor(unpack(CooldownTextDB.Colour))
-    if GeneralDB.Fonts.Shadow.Enabled then
-        region:SetShadowColor(GeneralDB.Fonts.Shadow.Colour[1], GeneralDB.Fonts.Shadow.Colour[2], GeneralDB.Fonts.Shadow.Colour[3], GeneralDB.Fonts.Shadow.Colour[4])
-        region:SetShadowOffset(GeneralDB.Fonts.Shadow.OffsetX, GeneralDB.Fonts.Shadow.OffsetY)
-    else
-        region:SetShadowColor(0, 0, 0, 0)
-        region:SetShadowOffset(0, 0)
-    end
-    return region
 end
 
 local function FetchItemData(itemId)
