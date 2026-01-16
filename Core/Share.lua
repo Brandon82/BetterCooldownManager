@@ -43,7 +43,7 @@ function BCDM:ImportSavedVariables(EncodedInfo, profileName)
             OnAccept = function(self)
                 local editBox = self.EditBox
                 local newProfileName = editBox:GetText() or string.format("Imported_%s-%s-%s", date("%d"), date("%m"), date("%Y"))
-                if not newProfileName or newProfileName == "" then BCDM:Print("Please enter a valid profile name.") return end
+                if not newProfileName or newProfileName == "" then BCDM:PrettyPrint("Please enter a valid profile name.") return end
 
                 BCDM.db:SetProfile(newProfileName)
                 wipe(BCDM.db.profile)
