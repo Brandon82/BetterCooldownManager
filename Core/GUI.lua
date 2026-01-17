@@ -30,6 +30,7 @@ local PowerNames = {
     ["SOUL"] = "Soul",
     ["RUNE_RECHARGE"] = "Rune on Cooldown",
     ["CHARGED_COMBO_POINTS"] = "Charged Combo Points",
+    ["ESSENCE_RECHARGE"] = "Essence on Cooldown",
     ["RUNES"] = {
         FROST = "Frost",
         UNHOLY = "Unholy",
@@ -479,7 +480,7 @@ local function CreateGeneralSettings(parentContainer)
     SecondaryColoursContainer:SetLayout("Flow")
     CustomColoursContainer:AddChild(SecondaryColoursContainer)
 
-    local SecondaryPowerOrder = { Enum.PowerType.Chi, Enum.PowerType.ComboPoints, Enum.PowerType.HolyPower, Enum.PowerType.ArcaneCharges, Enum.PowerType.Essence, Enum.PowerType.SoulShards, "STAGGER", Enum.PowerType.Runes, "RUNE_RECHARGE", "SOUL", Enum.PowerType.Maelstrom, "CHARGED_COMBO_POINTS" }
+    local SecondaryPowerOrder = { Enum.PowerType.Chi, Enum.PowerType.ComboPoints, Enum.PowerType.HolyPower, Enum.PowerType.ArcaneCharges, Enum.PowerType.Essence, Enum.PowerType.SoulShards, "STAGGER", Enum.PowerType.Runes, "RUNE_RECHARGE", "SOUL", Enum.PowerType.Maelstrom, "CHARGED_COMBO_POINTS", "ESSENCE_RECHARGE" }
     for _, powerType in ipairs(SecondaryPowerOrder) do
         local powerColour = BCDM.db.profile.General.Colours.SecondaryPower[powerType]
         local PowerColour = AG:Create("ColorPicker")
@@ -488,7 +489,7 @@ local function CreateGeneralSettings(parentContainer)
         PowerColour:SetColor(R, G, B)
         PowerColour:SetCallback("OnValueChanged", function(widget, _, r, g, b) BCDM.db.profile.General.Colours.SecondaryPower[powerType] = {r, g, b} BCDM:UpdateBCDM() end)
         PowerColour:SetHasAlpha(false)
-        PowerColour:SetRelativeWidth(0.15)
+        PowerColour:SetRelativeWidth(0.3)
         SecondaryColoursContainer:AddChild(PowerColour)
     end
 
@@ -1461,6 +1462,8 @@ local function CreateCooldownViewerSettings(parentContainer, viewerType)
     if viewerType == "BuffBar" then RefreshBuffBarGUISettings() end
 
     ScrollFrame:DoLayout()
+
+    parentContainer:DoLayout()
 
     return ScrollFrame
 end
