@@ -172,22 +172,8 @@ local function LayoutCustomItemBar()
 
     local growthDirection = CustomDB.GrowthDirection or "RIGHT"
 
-    local anchorFlipMap = {
-        ["LEFT"] = "RIGHT",
-        ["RIGHT"] = "LEFT",
-        ["TOPLEFT"] = "TOPRIGHT",
-        ["TOPRIGHT"] = "TOPLEFT",
-        ["BOTTOMLEFT"] = "BOTTOMRIGHT",
-        ["BOTTOMRIGHT"] = "BOTTOMLEFT",
-        ["TOP"] = "TOP",
-        ["BOTTOM"] = "BOTTOM",
-        ["CENTER"] = "CENTER"
-    }
-
     local containerAnchorFrom = CustomDB.Layout[1]
-    if growthDirection == "LEFT" then
-        containerAnchorFrom = anchorFlipMap[CustomDB.Layout[1]] or CustomDB.Layout[1]
-    elseif growthDirection == "UP" then
+    if growthDirection == "UP" then
         local verticalFlipMap = {
             ["TOPLEFT"] = "BOTTOMLEFT",
             ["TOP"] = "BOTTOM",
@@ -215,6 +201,25 @@ local function LayoutCustomItemBar()
     local iconSize = CustomDB.IconSize
     local iconSpacing = CustomDB.Spacing
 
+    -- Calculate and set container size first
+    if #customItemBarIcons == 0 then
+        BCDM.CustomItemBarContainer:SetSize(1, 1)
+    else
+        local point = select(1, BCDM.CustomItemBarContainer:GetPoint(1))
+        local useCenteredLayout = (point == "TOP" or point == "BOTTOM") and (growthDirection == "LEFT" or growthDirection == "RIGHT")
+
+        local totalWidth, totalHeight = 0, 0
+        if useCenteredLayout or growthDirection == "RIGHT" or growthDirection == "LEFT" then
+            totalWidth = (#customItemBarIcons * iconSize) + ((#customItemBarIcons - 1) * iconSpacing)
+            totalHeight = iconSize
+        elseif growthDirection == "UP" or growthDirection == "DOWN" then
+            totalWidth = iconSize
+            totalHeight = (#customItemBarIcons * iconSize) + ((#customItemBarIcons - 1) * iconSpacing)
+        end
+        BCDM.CustomItemBarContainer:SetWidth(totalWidth)
+        BCDM.CustomItemBarContainer:SetHeight(totalHeight)
+    end
+
     local LayoutConfig = {
         TOPLEFT     = { anchor="TOPLEFT",     xMult=1,  yMult=1  },
         TOP         = { anchor="TOP",         xMult=0,  yMult=1  },
@@ -230,7 +235,7 @@ local function LayoutCustomItemBar()
     local point = select(1, BCDM.CustomItemBarContainer:GetPoint(1))
     local useCenteredLayout = (point == "TOP" or point == "BOTTOM") and (growthDirection == "LEFT" or growthDirection == "RIGHT")
 
-    if useCenteredLayout then
+    if useCenteredLayout and #customItemBarIcons > 0 then
         local totalWidth = (#customItemBarIcons * iconSize) + ((#customItemBarIcons - 1) * iconSpacing)
         local startOffset = -(totalWidth / 2) + (iconSize / 2)
 
@@ -267,22 +272,6 @@ local function LayoutCustomItemBar()
             ApplyCooldownText()
             spellIcon:Show()
         end
-    end
-
-    if #customItemBarIcons > 0 then
-        local totalWidth, totalHeight = 0, 0
-        if growthDirection == "RIGHT" or growthDirection == "LEFT" then
-            totalWidth = (#customItemBarIcons * iconSize) + ((#customItemBarIcons - 1) * iconSpacing)
-            totalHeight = iconSize
-        elseif growthDirection == "UP" or growthDirection == "DOWN" then
-            totalWidth = iconSize
-            totalHeight = (#customItemBarIcons * iconSize) + ((#customItemBarIcons - 1) * iconSpacing)
-        end
-        BCDM.CustomItemBarContainer:SetWidth(totalWidth)
-        BCDM.CustomItemBarContainer:SetHeight(totalHeight)
-    else
-        BCDM.CustomItemBarContainer:SetWidth(1)
-        BCDM.CustomItemBarContainer:SetHeight(1)
     end
 
     BCDM.CustomItemBarContainer:Show()
