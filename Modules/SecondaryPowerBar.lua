@@ -435,7 +435,7 @@ function BCDM:CreateSecondaryPowerBar()
     SecondaryPowerBar:SetBackdropBorderColor(0, 0, 0, 1)
     SecondaryPowerBar:SetSize(SecondaryPowerBarDB.Width, SecondaryPowerBarDB.Height)
     SecondaryPowerBar:SetPoint(SecondaryPowerBarDB.Layout[1], _G[SecondaryPowerBarDB.Layout[2]], SecondaryPowerBarDB.Layout[3], SecondaryPowerBarDB.Layout[4], SecondaryPowerBarDB.Layout[5])
-    SecondaryPowerBar:SetFrameStrata("MEDIUM")
+    SecondaryPowerBar:SetFrameStrata("LOW")
 
     SecondaryPowerBar.Status = CreateFrame("StatusBar", nil, SecondaryPowerBar)
     SecondaryPowerBar.Status:SetPoint("TOPLEFT", SecondaryPowerBar, "TOPLEFT", 1, -1)
