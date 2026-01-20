@@ -249,29 +249,28 @@ local RACIALS = {
     [20589]  = { isActive = true, layoutIndex = 4 },  -- Escape Artist
     [28880]  = { isActive = true, layoutIndex = 5 },  -- Gift of the Naaru
     [68992]  = { isActive = true, layoutIndex = 6 },  -- Darkflight
-    [68996]  = { isActive = true, layoutIndex = 7 },  -- Two Forms
-    [20572]  = { isActive = true, layoutIndex = 8 },  -- Blood Fury
-    [7744]   = { isActive = true, layoutIndex = 9 },  -- Will of the Forsaken
-    [20577]  = { isActive = true, layoutIndex = 10 }, -- Cannibalize
-    [20549]  = { isActive = true, layoutIndex = 11 }, -- War Stomp
-    [26297]  = { isActive = true, layoutIndex = 12 }, -- Berserking
-    [202719] = { isActive = true, layoutIndex = 13 }, -- Arcane Torrent
-    [69070]  = { isActive = true, layoutIndex = 14 }, -- Rocket Jump
-    [69041]  = { isActive = true, layoutIndex = 15 }, -- Rocket Barrage
-    [256948] = { isActive = true, layoutIndex = 16 }, -- Spatial Rift
-    [255647] = { isActive = true, layoutIndex = 17 }, -- Light's Judgment
-    [259930] = { isActive = true, layoutIndex = 18 }, -- Forge of Light
-    [265221] = { isActive = true, layoutIndex = 19 }, -- Fireblood
-    [291944] = { isActive = true, layoutIndex = 20 }, -- Regeneratin'
-    [281954] = { isActive = true, layoutIndex = 21 }, -- Pterrordax Swoop
-    [312411] = { isActive = true, layoutIndex = 22 }, -- Bag of Tricks
-    [312370] = { isActive = true, layoutIndex = 23 }, -- Make Camp
-    [312924] = { isActive = true, layoutIndex = 24 }, -- Hyper Organic Light Originator
-    [107079] = { isActive = true, layoutIndex = 25 }, -- Quaking Palm
-    [368970] = { isActive = true, layoutIndex = 26 }, -- Tail Swipe
-    [357214] = { isActive = true, layoutIndex = 27 }, -- Wing Buffet
-    [436344] = { isActive = true, layoutIndex = 28 }, -- Azerite Surge
-    [1237885] = { isActive = true, layoutIndex = 29 }, -- Thorn Bloom
+    [20572]  = { isActive = true, layoutIndex = 7 },  -- Blood Fury
+    [7744]   = { isActive = true, layoutIndex = 8 },  -- Will of the Forsaken
+    [20577]  = { isActive = true, layoutIndex = 9 }, -- Cannibalize
+    [20549]  = { isActive = true, layoutIndex = 10 }, -- War Stomp
+    [26297]  = { isActive = true, layoutIndex = 11 }, -- Berserking
+    [202719] = { isActive = true, layoutIndex = 12 }, -- Arcane Torrent
+    [69070]  = { isActive = true, layoutIndex = 13 }, -- Rocket Jump
+    [69041]  = { isActive = true, layoutIndex = 14 }, -- Rocket Barrage
+    [256948] = { isActive = true, layoutIndex = 15 }, -- Spatial Rift
+    [255647] = { isActive = true, layoutIndex = 16 }, -- Light's Judgment
+    [259930] = { isActive = true, layoutIndex = 17 }, -- Forge of Light
+    [265221] = { isActive = true, layoutIndex = 18 }, -- Fireblood
+    [291944] = { isActive = true, layoutIndex = 19 }, -- Regeneratin'
+    [281954] = { isActive = true, layoutIndex = 20 }, -- Pterrordax Swoop
+    [312411] = { isActive = true, layoutIndex = 21 }, -- Bag of Tricks
+    [312370] = { isActive = true, layoutIndex = 22 }, -- Make Camp
+    [312924] = { isActive = true, layoutIndex = 23 }, -- Hyper Organic Light Originator
+    [107079] = { isActive = true, layoutIndex = 24 }, -- Quaking Palm
+    [368970] = { isActive = true, layoutIndex = 25 }, -- Tail Swipe
+    [357214] = { isActive = true, layoutIndex = 26 }, -- Wing Buffet
+    [436344] = { isActive = true, layoutIndex = 27 }, -- Azerite Surge
+    [1237885] = { isActive = true, layoutIndex = 28 }, -- Thorn Bloom
 }
 
 function BCDM:AddRecommendedItems()
