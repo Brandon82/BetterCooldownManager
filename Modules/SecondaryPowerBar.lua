@@ -800,9 +800,10 @@ function BCDM:UpdateSecondaryPowerBar()
         secondaryPowerBar.Status:SetScript("OnSizeChanged", function()
             CreateTicksBasedOnPowerType()
             local powerType = DetectSecondaryPower()
-            if powerType == Enum.PowerType.ComboPoints and #comboPoints > 0 then
-                LayoutComboPoints()
-            elseif powerType == Enum.PowerType.Essence and #essenceTicks > 0 then
+            -- if powerType == Enum.PowerType.ComboPoints and #comboPoints > 0 then
+            --     LayoutComboPoints()
+            -- else
+            if powerType == Enum.PowerType.Essence and #essenceTicks > 0 then
                 LayoutEssenceTicks()
                 UpdateEssenceDisplay()
             end
