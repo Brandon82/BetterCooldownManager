@@ -86,6 +86,7 @@ local Defaults = {
             General = {
                 IconZoom = 0.1,
                 BorderSize = 1,
+                DisableAuraOverlay = true,
                 Glow = {
                     Enabled = true,
                     Type = "Pixel",

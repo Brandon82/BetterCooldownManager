@@ -219,6 +219,7 @@ function BCDM:UpdateBCDM()
     BCDM:UpdateCustomItemsSpellsBar()
     BCDM:UpdateTrinketBar()
     BCDM:RefreshCustomGlows()
+    BCDM:RefreshAuraOverlayRemoval()
 end
 
 function BCDM:CreateCooldownViewerOverlays()
