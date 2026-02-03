@@ -28,7 +28,7 @@ end
 function BCDM:SetupEditModeManager()
     local EditModeManagerEventFrame = CreateFrame("Frame")
     EditModeManagerEventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
-    EditModeManagerEventFrame:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
+    EditModeManagerEventFrame:RegisterEvent("ZONE_CHANGED")
     EditModeManagerEventFrame:RegisterEvent("ZONE_CHANGED_NEW_AREA")
     EditModeManagerEventFrame:SetScript("OnEvent", function() BCDM:UpdateLayout() end)
 end
