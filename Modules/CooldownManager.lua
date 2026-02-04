@@ -277,7 +277,10 @@ local function CenterBuffs()
 
     for _, childFrame in ipairs({ BuffIconCooldownViewer:GetChildren() }) do
         if childFrame and childFrame.Icon and childFrame:IsShown() then
-            table.insert(visibleBuffIcons, childFrame)
+            local skipIcon = CMI and CMI.IsIconAssigned and childFrame.cooldownID and CMI.IsIconAssigned(childFrame.cooldownID)
+            if not skipIcon then
+                table.insert(visibleBuffIcons, childFrame)
+            end
         end
     end
 
@@ -322,7 +325,10 @@ local function CenterWrappedRows(viewerName)
     local visibleIcons = {}
     for _, childFrame in ipairs({ viewer:GetChildren() }) do
         if childFrame and childFrame:IsShown() and childFrame.layoutIndex then
-            table.insert(visibleIcons, childFrame)
+            local skipIcon = CMI and CMI.IsIconAssigned and childFrame.cooldownID and CMI.IsIconAssigned(childFrame.cooldownID)
+            if not skipIcon then
+                table.insert(visibleIcons, childFrame)
+            end
         end
     end
 
