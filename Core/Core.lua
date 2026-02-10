@@ -3,7 +3,7 @@ local BetterCooldownManager = LibStub("AceAddon-3.0"):NewAddon("BetterCooldownMa
 
 function BetterCooldownManager:OnInitialize()
     BCDM.db = LibStub("AceDB-3.0"):New("BCDMDB", BCDM:GetDefaultDB(), true)
-    BCDM.LDS:EnhanceDatabase(BCDM.db, "UnhaltedUnitFrames")
+    BCDM.LDS:EnhanceDatabase(BCDM.db, "BetterCooldownManager")
     for k, v in pairs(BCDM:GetDefaultDB()) do
         if BCDM.db.profile[k] == nil then
             BCDM.db.profile[k] = v

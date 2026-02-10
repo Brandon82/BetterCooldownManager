@@ -1635,7 +1635,7 @@ local function CreateCooldownViewerSettings(parentContainer, viewerType)
         ScrollFrame:AddChild(toggleContainer)
 
         local centerBuffsCheckbox = AG:Create("CheckBox")
-        centerBuffsCheckbox:SetLabel("Center Buffs (Horizontally) - |cFFFF4040Reload|r Required.")
+        centerBuffsCheckbox:SetLabel("Center Buffs (Horizontally or Vertically) - |cFFFF4040Reload|r Required.")
         centerBuffsCheckbox:SetValue(BCDM.db.profile.CooldownManager.Buffs.CenterBuffs)
         centerBuffsCheckbox:SetCallback("OnValueChanged", function(_, _, value)
             StaticPopupDialogs["BCDM_RELOAD_UI"] = {
@@ -1684,48 +1684,6 @@ local function CreateCooldownViewerSettings(parentContainer, viewerType)
         toggleContainer:AddChild(centerHorizontallyCheckbox)
     end
 
-    -- local foregroundColourPicker;
-
-    -- if viewerType == "BuffBar" then
-    --     local toggleContainer = AG:Create("InlineGroup")
-    --     toggleContainer:SetTitle("Buff Bar Viewer Settings")
-    --     toggleContainer:SetFullWidth(true)
-    --     toggleContainer:SetLayout("Flow")
-    --     ScrollFrame:AddChild(toggleContainer)
-
-    --     local matchWidthOfAnchorCheckBox = AG:Create("CheckBox")
-    --     matchWidthOfAnchorCheckBox:SetLabel("Match Width of Anchor")
-    --     matchWidthOfAnchorCheckBox:SetValue(BCDM.db.profile.CooldownManager.BuffBar.MatchWidthOfAnchor)
-    --     matchWidthOfAnchorCheckBox:SetCallback("OnValueChanged", function(_, _, value) BCDM.db.profile.CooldownManager.BuffBar.MatchWidthOfAnchor = value BCDM:UpdateCooldownViewer("BuffBar") RefreshBuffBarGUISettings() end)
-    --     matchWidthOfAnchorCheckBox:SetRelativeWidth(0.5)
-    --     toggleContainer:AddChild(matchWidthOfAnchorCheckBox)
-
-    --     local colourByClassCheckbox = AG:Create("CheckBox")
-    --     colourByClassCheckbox:SetLabel("Colour Bar by Class")
-    --     colourByClassCheckbox:SetValue(BCDM.db.profile.CooldownManager.BuffBar.ColourByClass)
-    --     colourByClassCheckbox:SetCallback("OnValueChanged", function(_, _, value) BCDM.db.profile.CooldownManager.BuffBar.ColourByClass = value BCDM:UpdateCooldownViewer("BuffBar") RefreshBuffBarGUISettings() end)
-    --     colourByClassCheckbox:SetRelativeWidth(0.5)
-    --     toggleContainer:AddChild(colourByClassCheckbox)
-
-    --     foregroundColourPicker = AG:Create("ColorPicker")
-    --     foregroundColourPicker:SetLabel("Foreground Colour")
-    --     local r, g, b = unpack(BCDM.db.profile.CooldownManager.BuffBar.ForegroundColour)
-    --     foregroundColourPicker:SetColor(r, g, b)
-    --     foregroundColourPicker:SetCallback("OnValueChanged", function(self, _, r, g, b, a) BCDM.db.profile.CooldownManager.BuffBar.ForegroundColour = {r, g, b, a} BCDM:UpdateCooldownViewer("BuffBar") end)
-    --     foregroundColourPicker:SetRelativeWidth(0.5)
-    --     foregroundColourPicker:SetHasAlpha(false)
-    --     toggleContainer:AddChild(foregroundColourPicker)
-
-    --     local backgroundColourPicker = AG:Create("ColorPicker")
-    --     backgroundColourPicker:SetLabel("Background Colour")
-    --     local br, bg, bb = unpack(BCDM.db.profile.CooldownManager.BuffBar.BackgroundColour)
-    --     backgroundColourPicker:SetColor(br, bg, bb)
-    --     backgroundColourPicker:SetCallback("OnValueChanged", function(self, _, r, g, b, a) BCDM.db.profile.CooldownManager.BuffBar.BackgroundColour = {r, g, b, a} BCDM:UpdateCooldownViewer("BuffBar") end)
-    --     backgroundColourPicker:SetRelativeWidth(0.5)
-    --     backgroundColourPicker:SetHasAlpha(true)
-    --     toggleContainer:AddChild(backgroundColourPicker)
-    -- end
-
     if viewerType == "Trinket" then
         local enabledCheckbox = AG:Create("CheckBox")
         enabledCheckbox:SetLabel("Enable Trinket Viewer")
@@ -1741,7 +1699,9 @@ local function CreateCooldownViewerSettings(parentContainer, viewerType)
     layoutContainer:SetLayout("Flow")
     ScrollFrame:AddChild(layoutContainer)
 
-    if viewerType ~= "Custom" and viewerType ~= "AdditionalCustom" and viewerType ~= "Trinket" and viewerType ~= "ItemSpell" and viewerType ~= "Item" then CreateInformationTag(layoutContainer, "|cFFFFCC00Padding|r is handled by |cFF00B0F7Blizzard|r, not |cFF8080FFBetter|rCooldownManager.") end
+    if viewerType ~= "Custom" and viewerType ~= "AdditionalCustom" and viewerType ~= "Trinket" and viewerType ~= "ItemSpell" and viewerType ~= "Item" then
+        CreateInformationTag(layoutContainer, "|cFFFFCC00Padding|r is handled by |cFF00B0F7Blizzard|r, not |cFF8080FFBetter|rCooldownManager.")
+    end
 
     local anchorFromDropdown = AG:Create("Dropdown")
     anchorFromDropdown:SetLabel("Anchor From")
@@ -1815,8 +1775,20 @@ local function CreateCooldownViewerSettings(parentContainer, viewerType)
     local keepAspectCheckbox = AG:Create("CheckBox")
     keepAspectCheckbox:SetLabel("Keep Aspect Ratio")
     keepAspectCheckbox:SetValue(BCDM.db.profile.CooldownManager[viewerType].KeepAspectRatio ~= false)
-    keepAspectCheckbox:SetRelativeWidth(1)
+    keepAspectCheckbox:SetRelativeWidth((viewerType == "Item" or viewerType == "ItemSpell") and 0.5 or 1)
     iconContainer:AddChild(keepAspectCheckbox)
+
+    if viewerType == "Item" or viewerType == "ItemSpell" then
+        local hideZeroChargesCheckbox = AG:Create("CheckBox")
+        hideZeroChargesCheckbox:SetLabel("Hide Items with Zero Charges/Uses")
+        hideZeroChargesCheckbox:SetValue(BCDM.db.profile.CooldownManager[viewerType].HideZeroCharges)
+        hideZeroChargesCheckbox:SetCallback("OnValueChanged", function(_, _, value)
+            BCDM.db.profile.CooldownManager[viewerType].HideZeroCharges = value
+            BCDM:UpdateCooldownViewer(viewerType)
+        end)
+        hideZeroChargesCheckbox:SetRelativeWidth(0.5)
+        iconContainer:AddChild(hideZeroChargesCheckbox)
+    end
 
     local iconSizeSlider = AG:Create("Slider")
     iconSizeSlider:SetLabel("Icon Size")
@@ -2634,7 +2606,7 @@ local function CreateCastBarSettings(parentContainer)
     local enabledCheckbox = AG:Create("CheckBox")
     enabledCheckbox:SetLabel("Enable Cast Bar")
     enabledCheckbox:SetValue(BCDM.db.profile.CastBar.Enabled)
-    enabledCheckbox:SetCallback("OnValueChanged", function(self, _, value) BCDM.db.profile.CastBar.Enabled = value BCDM:UpdateCastBar() RefreshCastBarGUISettings() end)
+    enabledCheckbox:SetCallback("OnValueChanged", function(self, _, value) BCDM.db.profile.CastBar.Enabled = value BCDM:PromptReload() end)
     enabledCheckbox:SetRelativeWidth(0.33)
     toggleContainer:AddChild(enabledCheckbox)
 
@@ -2995,7 +2967,7 @@ local function CreateProfileSettings(containerParent)
     ExportingHeading:SetFullWidth(true)
     SharingContainer:AddChild(ExportingHeading)
 
-    CreateInformationTag(SharingContainer, "You can export your profile by pressing |cFF8080FFExport Profile|r button below & share the string with other |cFF8080FFUnhalted|r Unit Frame users.")
+    CreateInformationTag(SharingContainer, "You can export your profile by pressing |cFF8080FFExport Profile|r button below & share the string with other |cFF8080FFBetter|rCooldownManager users.")
 
     local ExportingEditBox = AG:Create("EditBox")
     ExportingEditBox:SetLabel("Export String...")
