@@ -1,4 +1,5 @@
 local _, BCDM = ...
+_G.BCDM = BCDM
 BCDMG = BCDMG or {}
 
 BCDM.IS_DEATHKNIGHT = select(2, UnitClass("player")) == "DEATHKNIGHT"
@@ -22,6 +23,32 @@ BCDM.LSM = LibStub("LibSharedMedia-3.0")
 BCDM.LDS = LibStub("LibDualSpec-1.0")
 BCDM.LEMO = LibStub("LibEditModeOverride-1.0")
 BCDM.AG = LibStub("AceGUI-3.0")
+
+function BCDM:IsIconManagedByCMI(icon)
+    if not icon or not icon.cooldownID then return false end
+    if not _G.CMI then return false end
+    if _G.CMI.IsIconAssigned and _G.CMI.IsIconAssigned(icon.cooldownID) then
+        return true
+    end
+    local db = _G.CooldownManagerInfiniteDB
+    if not db or not db.CDM then return false end
+    local _, classFile = UnitClass("player")
+    local playerClass = classFile and strlower(classFile)
+    local specIndex = GetSpecialization()
+    local _, playerSpec = specIndex and GetSpecializationInfo(specIndex)
+    playerSpec = (playerSpec and playerSpec ~= "") and playerSpec or "nospec"
+    if not playerClass or not db.CDM[playerClass] or not db.CDM[playerClass][playerSpec] then
+        return false
+    end
+    for _, barSettings in pairs(db.CDM[playerClass][playerSpec]) do
+        if barSettings.icons then
+            for _, id in pairs(barSettings.icons) do
+                if id == icon.cooldownID then return true end
+            end
+        end
+    end
+    return false
+end
 
 BCDM.INFOBUTTON = "|TInterface\\AddOns\\BetterCooldownManager\\Media\\InfoButton.png:16:16|t "
 BCDM.ADDON_NAME = C_AddOns.GetAddOnMetadata("BetterCooldownManager", "Title")
@@ -220,6 +247,9 @@ function BCDM:UpdateBCDM()
     BCDM:UpdateTrinketBar()
     BCDM:RefreshCustomGlows()
     BCDM:RefreshAuraOverlayRemoval()
+    if _G.CMI and _G.CMI.QueueUpdate then
+        _G.CMI.QueueUpdate("ExecuteLayout")
+    end
 end
 
 function BCDM:CreateCooldownViewerOverlays()

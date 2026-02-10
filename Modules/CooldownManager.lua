@@ -31,7 +31,7 @@ local function ApplyCooldownText(cooldownViewer)
     local Viewer = _G[cooldownViewer]
     if not Viewer then return end
     for _, icon in ipairs({ Viewer:GetChildren() }) do
-        if icon and icon.Cooldown then
+        if icon and icon.Cooldown and not BCDM:IsIconManagedByCMI(icon) then
             local textRegion = FetchCooldownTextRegion(icon.Cooldown)
             if textRegion then
                 if CooldownTextDB.ScaleByIconSize then
@@ -82,7 +82,7 @@ local function StyleIcons()
         local viewerSettings = cooldownManagerSettings[BCDM.CooldownManagerViewerToDBViewer[viewerName]]
         local iconWidth, iconHeight = BCDM:GetIconDimensions(viewerSettings)
         for _, childFrame in ipairs({_G[viewerName]:GetChildren()}) do
-            if childFrame then
+            if childFrame and not BCDM:IsIconManagedByCMI(childFrame) then
                 if childFrame.Icon then
                     BCDM:StripTextures(childFrame.Icon)
                     local iconZoomAmount = cooldownManagerSettings.General.IconZoom * 0.5
@@ -119,7 +119,7 @@ local function StyleChargeCount()
     local generalSettings = BCDM.db.profile.General
     for _, viewerName in ipairs(BCDM.CooldownManagerViewers) do
         for _, childFrame in ipairs({ _G[viewerName]:GetChildren() }) do
-            if childFrame and childFrame.ChargeCount and childFrame.ChargeCount.Current then
+            if childFrame and childFrame.ChargeCount and childFrame.ChargeCount.Current and not BCDM:IsIconManagedByCMI(childFrame) then
                 local currentChargeText = childFrame.ChargeCount.Current
                 currentChargeText:SetFont(BCDM.Media.Font, cooldownManagerSettings[BCDM.CooldownManagerViewerToDBViewer[viewerName]].Text.FontSize, generalSettings.Fonts.FontFlag)
                 currentChargeText:ClearAllPoints()
@@ -136,7 +136,7 @@ local function StyleChargeCount()
             end
         end
         for _, childFrame in ipairs({ _G[viewerName]:GetChildren() }) do
-            if childFrame and childFrame.Applications then
+            if childFrame and childFrame.Applications and not BCDM:IsIconManagedByCMI(childFrame) then
                 local applicationsText = childFrame.Applications.Applications
                 applicationsText:SetFont(BCDM.Media.Font, cooldownManagerSettings[BCDM.CooldownManagerViewerToDBViewer[viewerName]].Text.FontSize, generalSettings.Fonts.FontFlag)
                 applicationsText:ClearAllPoints()
@@ -165,7 +165,7 @@ local function CenterBuffs()
     local visibleBuffIcons = {}
 
     for _, childFrame in ipairs({ BuffIconCooldownViewer:GetChildren() }) do
-        if childFrame and childFrame.Icon and childFrame:IsShown() then
+        if childFrame and childFrame.Icon and childFrame:IsShown() and not BCDM:IsIconManagedByCMI(childFrame) then
             table.insert(visibleBuffIcons, childFrame)
         end
     end
@@ -226,7 +226,7 @@ local function CenterWrappedRows(viewerName)
 
     local visibleIcons = {}
     for _, childFrame in ipairs({ viewer:GetChildren() }) do
-        if childFrame and childFrame:IsShown() and childFrame.layoutIndex then
+        if childFrame and childFrame:IsShown() and childFrame.layoutIndex and not BCDM:IsIconManagedByCMI(childFrame) then
             table.insert(visibleIcons, childFrame)
         end
     end
@@ -298,6 +298,9 @@ function BCDM:SkinCooldownManager()
         if not InCombatLockdown() then
             LEMO:ApplyChanges()
         end
+        if _G.CMI and _G.CMI.QueueUpdate then
+            _G.CMI.QueueUpdate("ExecuteLayout")
+        end
     end)
 end
 
@@ -314,7 +317,7 @@ function BCDM:UpdateCooldownViewer(viewerType)
     if viewerType == "Buffs" then SetupCenterBuffs() end
 
     for _, childFrame in ipairs({cooldownViewerFrame:GetChildren()}) do
-        if childFrame then
+        if childFrame and not BCDM:IsIconManagedByCMI(childFrame) then
             if childFrame.Icon and ShouldSkin() then
                 BCDM:StripTextures(childFrame.Icon)
                 BCDM:ApplyIconTexCoord(childFrame.Icon, iconWidth, iconHeight, cooldownManagerSettings.General.IconZoom)
