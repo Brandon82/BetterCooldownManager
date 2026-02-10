@@ -4,8 +4,10 @@ local LEMO = LibStub("LibEditModeOverride-1.0")
 function BCDM:SetupEventManager()
     local BCDMEventManager = CreateFrame("Frame", "BCDMEventManagerFrame")
     BCDMEventManager:RegisterEvent("PLAYER_ENTERING_WORLD")
+    BCDMEventManager:RegisterEvent("LOADING_SCREEN_DISABLED")
     BCDMEventManager:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
     BCDMEventManager:RegisterEvent("TRAIT_CONFIG_UPDATED")
+    BCDMEventManager:RegisterEvent("SPELLS_CHANGED")
     BCDMEventManager:SetScript("OnEvent", function(_, event, ...)
         if InCombatLockdown() then return end
         if event == "PLAYER_SPECIALIZATION_CHANGED" then

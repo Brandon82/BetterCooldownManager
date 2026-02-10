@@ -477,17 +477,6 @@ BCDM.AnchorParents = {
         },
         { "EssentialCooldownViewer", "UtilityCooldownViewer", "NONE", "BCDM_PowerBar", "BCDM_SecondaryPowerBar", "BCDM_CastBar" },
     },
-    ["BuffBar"] = {
-        {
-            ["EssentialCooldownViewer"] = "|cFF00AEF7Blizzard|r: Essential Cooldown Viewer",
-            ["UtilityCooldownViewer"] = "|cFF00AEF7Blizzard|r: Utility Cooldown Viewer",
-            ["NONE"] = "|cFF00AEF7Blizzard|r: UIParent",
-            ["BCDM_PowerBar"] = "|cFF8080FFBCDM|r: Power Bar",
-            ["BCDM_SecondaryPowerBar"] = "|cFF8080FFBCDM|r: Secondary Power Bar",
-            ["BCDM_CastBar"] = "|cFF8080FFBCDM|r: Cast Bar",
-        },
-        { "EssentialCooldownViewer", "UtilityCooldownViewer", "NONE", "BCDM_PowerBar", "BCDM_SecondaryPowerBar", "BCDM_CastBar" },
-    },
     ["Custom"] = {
         {
             ["EssentialCooldownViewer"] = "|cFF00AEF7Blizzard|r: Essential Cooldown Viewer",
@@ -594,3 +583,16 @@ BCDM.AnchorParents = {
         { "EssentialCooldownViewer", "UtilityCooldownViewer", "BCDM_PowerBar", "BCDM_SecondaryPowerBar" },
     }
 }
+
+StaticPopupDialogs["BCDM_RELOAD"] = {
+    text = "You must |cFFFF4040reload|r in order for changes to take effect. Do you want to reload now?",
+    button1 = "Reload",
+    button2 = "Cancel",
+    OnAccept = function() ReloadUI() end,
+    timeout = 0,
+    whileDead = true,
+    hideOnEscape = true,
+}
+function BCDM:PromptReload()
+    StaticPopup_Show("BCDM_RELOAD")
+end
